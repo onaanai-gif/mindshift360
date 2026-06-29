@@ -1,6 +1,7 @@
 import {
   BusinessProfileValidationError,
   getBusinessProfile,
+  getRecommendationHistory,
   submitBusinessProfile,
   submitRecommendationProgress,
 } from "../api";
@@ -165,6 +166,40 @@ describe("submitRecommendationProgress", () => {
 
     await expect(submitRecommendationProgress(7, "get_more_customers", "later")).rejects.toThrow(
       "Something went wrong while saving your selection.",
+    );
+  });
+});
+
+describe("getRecommendationHistory", () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it("fetches history and maps created_at to camelCase", async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [
+        { title: "Make Buying Easier", status: "completed", created_at: "2024-03-01T10:00:00Z" },
+      ],
+    });
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const result = await getRecommendationHistory(7);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/recommendations/history/7"),
+    );
+    expect(result).toEqual([
+      { title: "Make Buying Easier", status: "completed", createdAt: "2024-03-01T10:00:00Z" },
+    ]);
+  });
+
+  it("throws when the request fails", async () => {
+    const fetchMock = jest.fn().mockResolvedValue({ ok: false, status: 500 });
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(getRecommendationHistory(7)).rejects.toThrow(
+      "We couldn't load your recommendation history.",
     );
   });
 });

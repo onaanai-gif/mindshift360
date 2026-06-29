@@ -38,6 +38,9 @@ describe("HomePage", () => {
       primaryGoal: "Increase Sales",
       latestRecommendationStatus: "completed",
       lastUpdated: "2024-01-01T00:00:00Z",
+      recommendationsCompleted: 1,
+      recommendationsNeedHelp: 0,
+      recommendationsLater: 0,
     });
 
     render(<HomePage />);

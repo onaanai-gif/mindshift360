@@ -37,12 +37,14 @@ def get_latest_business_profile(db: Session = Depends(get_db)) -> LatestBusiness
     if profile is None:
         raise HTTPException(status_code=404, detail="No business profile found")
 
-    latest_progress = (
+    all_progress = (
         db.query(DailyRecommendationProgress)
         .filter(DailyRecommendationProgress.business_profile_id == profile.id)
         .order_by(DailyRecommendationProgress.id.desc())
-        .first()
+        .all()
     )
+
+    latest_progress = all_progress[0] if all_progress else None
 
     return LatestBusinessProfileRead(
         id=profile.id,
@@ -54,6 +56,9 @@ def get_latest_business_profile(db: Session = Depends(get_db)) -> LatestBusiness
         updated_at=profile.updated_at,
         latest_recommendation_status=latest_progress.status if latest_progress else None,
         last_updated=latest_progress.updated_at if latest_progress else profile.updated_at,
+        recommendations_completed=sum(1 for p in all_progress if p.status == "completed"),
+        recommendations_need_help=sum(1 for p in all_progress if p.status == "need_help_attempt"),
+        recommendations_later=sum(1 for p in all_progress if p.status == "later"),
     )
 
 

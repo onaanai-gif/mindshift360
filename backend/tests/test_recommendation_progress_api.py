@@ -97,3 +97,89 @@ def test_create_recommendation_progress_missing_profile_returns_404(client: Test
     )
 
     assert response.status_code == 404
+
+
+def test_get_recommendation_history_returns_404_for_unknown_profile(client: TestClient) -> None:
+    response = client.get("/api/recommendations/history/999999")
+
+    assert response.status_code == 404
+
+
+def test_get_recommendation_history_returns_empty_list_when_no_progress(
+    client: TestClient,
+) -> None:
+    profile_id = _create_profile(client)
+
+    response = client.get(f"/api/recommendations/history/{profile_id}")
+
+    assert response.status_code == 200
+    assert response.json() == []
+
+
+def test_get_recommendation_history_returns_records_newest_first(client: TestClient) -> None:
+    profile_id = _create_profile(client)
+    client.post(
+        "/api/recommendations/progress",
+        json={
+            "business_profile_id": profile_id,
+            "recommendation_key": "get_more_customers",
+            "status": "later",
+        },
+    )
+    client.post(
+        "/api/recommendations/progress",
+        json={
+            "business_profile_id": profile_id,
+            "recommendation_key": "increase_sales",
+            "status": "completed",
+        },
+    )
+
+    response = client.get(f"/api/recommendations/history/{profile_id}")
+
+    assert response.status_code == 200
+    items = response.json()
+    assert len(items) == 2
+    assert items[0]["title"] == "Make Buying Easier"
+    assert items[0]["status"] == "completed"
+    assert items[1]["title"] == "Help More People Find Your Business"
+    assert items[1]["status"] == "later"
+    assert "created_at" in items[0]
+
+
+def test_get_recommendation_history_maps_key_to_title(client: TestClient) -> None:
+    profile_id = _create_profile(client)
+    client.post(
+        "/api/recommendations/progress",
+        json={
+            "business_profile_id": profile_id,
+            "recommendation_key": "organise_my_business",
+            "status": "need_help_attempt",
+        },
+    )
+
+    response = client.get(f"/api/recommendations/history/{profile_id}")
+
+    assert response.status_code == 200
+    assert response.json()[0]["title"] == "Organise Your Daily Work"
+
+
+def test_get_latest_business_profile_includes_progress_counts(client: TestClient) -> None:
+    profile_id = _create_profile(client)
+    for status in ["completed", "completed", "later", "need_help_attempt"]:
+        client.post(
+            "/api/recommendations/progress",
+            json={
+                "business_profile_id": profile_id,
+                "recommendation_key": "get_more_customers",
+                "status": status,
+            },
+        )
+
+    response = client.get("/api/business/profile/latest")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["recommendations_completed"] == 2
+    assert body["recommendations_later"] == 1
+    assert body["recommendations_need_help"] == 1

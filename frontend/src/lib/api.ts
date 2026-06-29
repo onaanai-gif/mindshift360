@@ -99,11 +99,17 @@ export async function getBusinessProfile(id: string | number): Promise<BusinessP
 export interface LatestBusinessProfile extends BusinessProfile {
   latestRecommendationStatus: string | null;
   lastUpdated: string;
+  recommendationsCompleted: number;
+  recommendationsNeedHelp: number;
+  recommendationsLater: number;
 }
 
 interface LatestBusinessProfileApiResponse extends BusinessProfileApiResponse {
   latest_recommendation_status: string | null;
   last_updated: string;
+  recommendations_completed: number;
+  recommendations_need_help: number;
+  recommendations_later: number;
 }
 
 export async function getLatestBusinessProfile(): Promise<LatestBusinessProfile | null> {
@@ -122,7 +128,39 @@ export async function getLatestBusinessProfile(): Promise<LatestBusinessProfile 
     ...toBusinessProfile(body),
     latestRecommendationStatus: body.latest_recommendation_status,
     lastUpdated: body.last_updated,
+    recommendationsCompleted: body.recommendations_completed,
+    recommendationsNeedHelp: body.recommendations_need_help,
+    recommendationsLater: body.recommendations_later,
   };
+}
+
+export interface RecommendationHistoryItem {
+  title: string;
+  status: string;
+  createdAt: string;
+}
+
+interface RecommendationHistoryApiItem {
+  title: string;
+  status: string;
+  created_at: string;
+}
+
+export async function getRecommendationHistory(
+  profileId: number,
+): Promise<RecommendationHistoryItem[]> {
+  const response = await fetch(`${API_BASE_URL}/api/recommendations/history/${profileId}`);
+
+  if (!response.ok) {
+    throw new Error("We couldn't load your recommendation history.");
+  }
+
+  const items: RecommendationHistoryApiItem[] = await response.json();
+  return items.map((item) => ({
+    title: item.title,
+    status: item.status,
+    createdAt: item.created_at,
+  }));
 }
 
 export type RecommendationStatus = "completed" | "later" | "need_help" | "need_help_attempt";

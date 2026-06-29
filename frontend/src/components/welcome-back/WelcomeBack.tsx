@@ -61,13 +61,40 @@ export function WelcomeBack({ profile }: WelcomeBackProps) {
 
       <p className="text-lg text-gray-700">{statusMessage}</p>
 
-      <button
-        type="button"
-        onClick={handleContinue}
-        className="w-full rounded-lg bg-blue-600 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
-      >
-        {buttonLabel}
-      </button>
+      <div className="rounded-lg border border-gray-200 bg-white p-6 text-left shadow-sm">
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">Your Progress</h2>
+        <dl className="flex flex-col gap-2 text-base text-gray-700">
+          <div className="flex justify-between">
+            <dt>Recommendations Completed</dt>
+            <dd className="font-semibold text-green-700">{profile.recommendationsCompleted}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt>Recommendations Needing Help</dt>
+            <dd className="font-semibold text-amber-700">{profile.recommendationsNeedHelp}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt>Recommendations Saved For Later</dt>
+            <dd className="font-semibold text-gray-500">{profile.recommendationsLater}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <button
+          type="button"
+          onClick={handleContinue}
+          className="w-full rounded-lg bg-blue-600 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
+        >
+          {buttonLabel}
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push(`/history?profileId=${profile.id}`)}
+          className="w-full rounded-lg bg-gray-200 px-6 py-4 text-lg font-semibold text-gray-900 transition-colors hover:bg-gray-300 active:bg-gray-400"
+        >
+          View My Progress
+        </button>
+      </div>
     </div>
   );
 }

@@ -22,6 +22,9 @@ const BASE_PROFILE: LatestBusinessProfile = {
   primaryGoal: "Increase Sales",
   latestRecommendationStatus: null,
   lastUpdated: "2024-01-01T00:00:00Z",
+  recommendationsCompleted: 0,
+  recommendationsNeedHelp: 0,
+  recommendationsLater: 0,
 };
 
 describe("WelcomeBack", () => {
@@ -90,5 +93,36 @@ describe("WelcomeBack", () => {
     expect(mockedPush).toHaveBeenCalledWith(
       "/journey?profileId=7&goal=Increase%20Sales",
     );
+  });
+
+  it("shows the Your Progress card with counts", () => {
+    render(
+      <WelcomeBack
+        profile={{
+          ...BASE_PROFILE,
+          recommendationsCompleted: 3,
+          recommendationsNeedHelp: 1,
+          recommendationsLater: 2,
+        }}
+      />,
+    );
+
+    expect(screen.getByText("Your Progress")).toBeInTheDocument();
+    expect(screen.getByText("Recommendations Completed")).toBeInTheDocument();
+    expect(screen.getByText("Recommendations Needing Help")).toBeInTheDocument();
+    expect(screen.getByText("Recommendations Saved For Later")).toBeInTheDocument();
+    expect(screen.getByText("3")).toBeInTheDocument();
+    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.getByText("2")).toBeInTheDocument();
+  });
+
+  it("navigates to /history when View My Progress is clicked", async () => {
+    const user = userEvent.setup();
+
+    render(<WelcomeBack profile={BASE_PROFILE} />);
+
+    await user.click(screen.getByRole("button", { name: "View My Progress" }));
+
+    expect(mockedPush).toHaveBeenCalledWith("/history?profileId=7");
   });
 });

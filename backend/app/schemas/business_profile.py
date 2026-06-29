@@ -62,3 +62,6 @@ class LatestBusinessProfileRead(BaseModel):
     updated_at: datetime
     latest_recommendation_status: str | None
     last_updated: datetime
+    recommendations_completed: int
+    recommendations_need_help: int
+    recommendations_later: int

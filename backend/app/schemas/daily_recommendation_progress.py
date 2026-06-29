@@ -26,3 +26,9 @@ class DailyRecommendationProgressRead(BaseModel):
     status: str
     created_at: datetime
     updated_at: datetime
+
+
+class RecommendationHistoryItem(BaseModel):
+    title: str
+    status: str
+    created_at: datetime
