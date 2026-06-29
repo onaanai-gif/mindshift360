@@ -73,7 +73,11 @@ export function BusinessSummary({ profileId }: BusinessSummaryProps) {
 
       <button
         type="button"
-        onClick={() => router.push("/journey")}
+        onClick={() =>
+          router.push(
+            `/journey?profileId=${profile.id}&goal=${encodeURIComponent(profile.primaryGoal)}`,
+          )
+        }
         className="w-full rounded-lg bg-blue-600 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
       >
         Start My Growth Journey

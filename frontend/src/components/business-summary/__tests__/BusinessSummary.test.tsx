@@ -81,7 +81,7 @@ describe("BusinessSummary", () => {
     );
   });
 
-  it("navigates to /journey when Start My Growth Journey is pressed", async () => {
+  it("navigates to /journey with the profile id and goal when Start My Growth Journey is pressed", async () => {
     mockedGetBusinessProfile.mockResolvedValueOnce(profileWithGoal("Increase Sales"));
     const user = userEvent.setup();
 
@@ -90,6 +90,6 @@ describe("BusinessSummary", () => {
     const button = await screen.findByRole("button", { name: "Start My Growth Journey" });
     await user.click(button);
 
-    expect(mockedPush).toHaveBeenCalledWith("/journey");
+    expect(mockedPush).toHaveBeenCalledWith("/journey?profileId=7&goal=Increase%20Sales");
   });
 });

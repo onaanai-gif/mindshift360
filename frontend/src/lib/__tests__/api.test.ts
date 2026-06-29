@@ -1,4 +1,9 @@
-import { BusinessProfileValidationError, getBusinessProfile, submitBusinessProfile } from "../api";
+import {
+  BusinessProfileValidationError,
+  getBusinessProfile,
+  submitBusinessProfile,
+  submitRecommendationProgress,
+} from "../api";
 
 const VALID_INPUT = {
   businessName: "Acme Bakery",
@@ -126,6 +131,40 @@ describe("getBusinessProfile", () => {
 
     await expect(getBusinessProfile(999)).rejects.toThrow(
       "We couldn't find that business profile.",
+    );
+  });
+});
+
+describe("submitRecommendationProgress", () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it("posts the selection in snake_case to the API", async () => {
+    const fetchMock = jest.fn().mockResolvedValue({ ok: true, status: 201 });
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    await submitRecommendationProgress(7, "get_more_customers", "completed");
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/recommendations/progress"),
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({
+          business_profile_id: 7,
+          recommendation_key: "get_more_customers",
+          status: "completed",
+        }),
+      }),
+    );
+  });
+
+  it("throws when the request fails", async () => {
+    const fetchMock = jest.fn().mockResolvedValue({ ok: false, status: 500 });
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(submitRecommendationProgress(7, "get_more_customers", "later")).rejects.toThrow(
+      "Something went wrong while saving your selection.",
     );
   });
 });

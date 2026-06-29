@@ -95,3 +95,25 @@ export async function getBusinessProfile(id: string | number): Promise<BusinessP
 
   return toBusinessProfile(await response.json());
 }
+
+export type RecommendationStatus = "completed" | "later" | "need_help";
+
+export async function submitRecommendationProgress(
+  businessProfileId: number,
+  recommendationKey: string,
+  status: RecommendationStatus,
+): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/recommendations/progress`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      business_profile_id: businessProfileId,
+      recommendation_key: recommendationKey,
+      status,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Something went wrong while saving your selection.");
+  }
+}
