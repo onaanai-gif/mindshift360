@@ -7,9 +7,12 @@ from app.models.daily_recommendation_progress import DailyRecommendationProgress
 from app.schemas.daily_recommendation_progress import (
     DailyRecommendationProgressCreate,
     DailyRecommendationProgressRead,
+    RecommendationStatus,
 )
 
 router = APIRouter(prefix="/api/recommendations", tags=["recommendations"])
+
+VALID_STATUSES = {status.value for status in RecommendationStatus}
 
 
 @router.post("/progress", response_model=DailyRecommendationProgressRead, status_code=201)
@@ -17,6 +20,9 @@ def create_recommendation_progress(
     payload: DailyRecommendationProgressCreate, db: Session = Depends(get_db)
 ) -> DailyRecommendationProgress:
     """Save a business owner's response to a daily recommendation."""
+    if payload.status not in VALID_STATUSES:
+        raise HTTPException(status_code=400, detail="Invalid status value")
+
     profile = db.get(BusinessProfile, payload.business_profile_id)
     if profile is None:
         raise HTTPException(status_code=404, detail="Business profile not found")
@@ -24,7 +30,7 @@ def create_recommendation_progress(
     progress = DailyRecommendationProgress(
         business_profile_id=payload.business_profile_id,
         recommendation_key=payload.recommendation_key,
-        status=payload.status.value,
+        status=payload.status,
     )
     db.add(progress)
     db.commit()

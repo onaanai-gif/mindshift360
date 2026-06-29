@@ -53,7 +53,7 @@ def test_create_recommendation_progress_does_not_overwrite_previous_records(
     assert first.json()["id"] != second.json()["id"]
 
 
-def test_create_recommendation_progress_invalid_status_returns_422(client: TestClient) -> None:
+def test_create_recommendation_progress_invalid_status_returns_400(client: TestClient) -> None:
     profile_id = _create_profile(client)
 
     response = client.post(
@@ -65,7 +65,25 @@ def test_create_recommendation_progress_invalid_status_returns_422(client: TestC
         },
     )
 
-    assert response.status_code == 422
+    assert response.status_code == 400
+
+
+def test_create_recommendation_progress_need_help_attempt_status_succeeds(
+    client: TestClient,
+) -> None:
+    profile_id = _create_profile(client)
+
+    response = client.post(
+        "/api/recommendations/progress",
+        json={
+            "business_profile_id": profile_id,
+            "recommendation_key": "get_more_customers",
+            "status": "need_help_attempt",
+        },
+    )
+
+    assert response.status_code == 201
+    assert response.json()["status"] == "need_help_attempt"
 
 
 def test_create_recommendation_progress_missing_profile_returns_404(client: TestClient) -> None:

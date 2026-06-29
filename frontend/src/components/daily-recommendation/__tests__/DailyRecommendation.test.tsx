@@ -52,19 +52,57 @@ describe("DailyRecommendation", () => {
     expect(screen.getByText("Thank you for taking action today.")).toBeInTheDocument();
   });
 
-  it("saves a need_help status and shows the need help confirmation", async () => {
-    mockedSubmitRecommendationProgress.mockResolvedValueOnce(undefined);
+  it("shows help content instead of saving when I Need Help is pressed", async () => {
     const user = userEvent.setup();
 
     render(<DailyRecommendation businessProfileId={7} primaryGoal="Increase Sales" />);
     await user.click(screen.getByRole("button", { name: "I Need Help" }));
 
+    expect(mockedSubmitRecommendationProgress).not.toHaveBeenCalled();
+    expect(screen.getByText("Need a little help?")).toBeInTheDocument();
+    expect(screen.getByText("Choose one product or service.")).toBeInTheDocument();
+  });
+
+  it.each<[PrimaryGoal, string]>([
+    ["Get More Customers", "Choose one small improvement today."],
+    ["Increase Sales", "Choose one product or service."],
+    ["Improve Customer Service", "Ask one customer:"],
+    ["Organise My Business", "Take one sheet of paper."],
+  ])("shows the correct help content for %s", async (goal, expectedText) => {
+    const user = userEvent.setup();
+
+    render(<DailyRecommendation businessProfileId={7} primaryGoal={goal} />);
+    await user.click(screen.getByRole("button", { name: "I Need Help" }));
+
+    expect(screen.getByText(expectedText)).toBeInTheDocument();
+  });
+
+  it("returns to the recommendation page when Back is pressed", async () => {
+    const user = userEvent.setup();
+
+    render(<DailyRecommendation businessProfileId={7} primaryGoal="Increase Sales" />);
+    await user.click(screen.getByRole("button", { name: "I Need Help" }));
+    await user.click(screen.getByRole("button", { name: "Back" }));
+
+    expect(screen.getByText("Make Buying Easier")).toBeInTheDocument();
+    expect(screen.queryByText("Need a little help?")).not.toBeInTheDocument();
+  });
+
+  it("saves a need_help_attempt status and shows the matching confirmation when I'll Try This is pressed", async () => {
+    mockedSubmitRecommendationProgress.mockResolvedValueOnce(undefined);
+    const user = userEvent.setup();
+
+    render(<DailyRecommendation businessProfileId={7} primaryGoal="Increase Sales" />);
+    await user.click(screen.getByRole("button", { name: "I Need Help" }));
+    await user.click(screen.getByRole("button", { name: "I'll Try This" }));
+
     expect(mockedSubmitRecommendationProgress).toHaveBeenCalledWith(
       7,
       "increase_sales",
-      "need_help",
+      "need_help_attempt",
     );
-    await waitFor(() => expect(screen.getByText("That's completely fine.")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Excellent.")).toBeInTheDocument());
+    expect(screen.getByText("Come back after you've tried it.")).toBeInTheDocument();
   });
 
   it("saves a later status and shows the later confirmation", async () => {

@@ -8,12 +8,13 @@ class RecommendationStatus(StrEnum):
     COMPLETED = "completed"
     LATER = "later"
     NEED_HELP = "need_help"
+    NEED_HELP_ATTEMPT = "need_help_attempt"
 
 
 class DailyRecommendationProgressCreate(BaseModel):
     business_profile_id: int
     recommendation_key: str
-    status: RecommendationStatus
+    status: str
 
 
 class DailyRecommendationProgressRead(BaseModel):

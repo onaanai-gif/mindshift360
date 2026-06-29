@@ -96,7 +96,7 @@ export async function getBusinessProfile(id: string | number): Promise<BusinessP
   return toBusinessProfile(await response.json());
 }
 
-export type RecommendationStatus = "completed" | "later" | "need_help";
+export type RecommendationStatus = "completed" | "later" | "need_help" | "need_help_attempt";
 
 export async function submitRecommendationProgress(
   businessProfileId: number,
