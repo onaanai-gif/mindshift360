@@ -96,6 +96,35 @@ export async function getBusinessProfile(id: string | number): Promise<BusinessP
   return toBusinessProfile(await response.json());
 }
 
+export interface LatestBusinessProfile extends BusinessProfile {
+  latestRecommendationStatus: string | null;
+  lastUpdated: string;
+}
+
+interface LatestBusinessProfileApiResponse extends BusinessProfileApiResponse {
+  latest_recommendation_status: string | null;
+  last_updated: string;
+}
+
+export async function getLatestBusinessProfile(): Promise<LatestBusinessProfile | null> {
+  const response = await fetch(`${API_BASE_URL}/api/business/profile/latest`);
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error("We couldn't find your business profile.");
+  }
+
+  const body: LatestBusinessProfileApiResponse = await response.json();
+  return {
+    ...toBusinessProfile(body),
+    latestRecommendationStatus: body.latest_recommendation_status,
+    lastUpdated: body.last_updated,
+  };
+}
+
 export type RecommendationStatus = "completed" | "later" | "need_help" | "need_help_attempt";
 
 export async function submitRecommendationProgress(

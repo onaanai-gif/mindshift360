@@ -50,3 +50,15 @@ class BusinessProfileRead(BaseModel):
     primary_goal: str
     created_at: datetime
     updated_at: datetime
+
+
+class LatestBusinessProfileRead(BaseModel):
+    id: int
+    business_name: str
+    business_type: str
+    town_city: str
+    primary_goal: str
+    created_at: datetime
+    updated_at: datetime
+    latest_recommendation_status: str | None
+    last_updated: datetime

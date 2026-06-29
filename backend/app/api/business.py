@@ -3,7 +3,12 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.models.business_profile import BusinessProfile
-from app.schemas.business_profile import BusinessProfileCreate, BusinessProfileRead
+from app.models.daily_recommendation_progress import DailyRecommendationProgress
+from app.schemas.business_profile import (
+    BusinessProfileCreate,
+    BusinessProfileRead,
+    LatestBusinessProfileRead,
+)
 
 router = APIRouter(prefix="/api/business", tags=["business"])
 
@@ -23,6 +28,33 @@ def create_business_profile(
     db.commit()
     db.refresh(profile)
     return profile
+
+
+@router.get("/profile/latest", response_model=LatestBusinessProfileRead)
+def get_latest_business_profile(db: Session = Depends(get_db)) -> LatestBusinessProfileRead:
+    """Retrieve the most recently created business profile, for resuming a session."""
+    profile = db.query(BusinessProfile).order_by(BusinessProfile.id.desc()).first()
+    if profile is None:
+        raise HTTPException(status_code=404, detail="No business profile found")
+
+    latest_progress = (
+        db.query(DailyRecommendationProgress)
+        .filter(DailyRecommendationProgress.business_profile_id == profile.id)
+        .order_by(DailyRecommendationProgress.id.desc())
+        .first()
+    )
+
+    return LatestBusinessProfileRead(
+        id=profile.id,
+        business_name=profile.business_name,
+        business_type=profile.business_type,
+        town_city=profile.town_city,
+        primary_goal=profile.primary_goal,
+        created_at=profile.created_at,
+        updated_at=profile.updated_at,
+        latest_recommendation_status=latest_progress.status if latest_progress else None,
+        last_updated=latest_progress.updated_at if latest_progress else profile.updated_at,
+    )
 
 
 @router.get("/profile/{profile_id}", response_model=BusinessProfileRead)

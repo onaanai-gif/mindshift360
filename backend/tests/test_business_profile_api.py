@@ -76,3 +76,54 @@ def test_get_business_profile_returns_404_when_missing(client: TestClient) -> No
     response = client.get("/api/business/profile/999999")
 
     assert response.status_code == 404
+
+
+def test_get_latest_business_profile_returns_404_when_none_exists(client: TestClient) -> None:
+    response = client.get("/api/business/profile/latest")
+
+    assert response.status_code == 404
+
+
+def test_get_latest_business_profile_returns_most_recent_profile(client: TestClient) -> None:
+    client.post("/api/business/profile", json=VALID_PAYLOAD)
+    second = client.post(
+        "/api/business/profile",
+        json={**VALID_PAYLOAD, "business_name": "Second Bakery"},
+    ).json()
+
+    response = client.get("/api/business/profile/latest")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["id"] == second["id"]
+    assert body["business_name"] == "Second Bakery"
+    assert body["latest_recommendation_status"] is None
+
+
+def test_get_latest_business_profile_returns_latest_recommendation_status(
+    client: TestClient,
+) -> None:
+    profile = client.post("/api/business/profile", json=VALID_PAYLOAD).json()
+    client.post(
+        "/api/recommendations/progress",
+        json={
+            "business_profile_id": profile["id"],
+            "recommendation_key": "get_more_customers",
+            "status": "later",
+        },
+    )
+    client.post(
+        "/api/recommendations/progress",
+        json={
+            "business_profile_id": profile["id"],
+            "recommendation_key": "get_more_customers",
+            "status": "need_help_attempt",
+        },
+    )
+
+    response = client.get("/api/business/profile/latest")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["id"] == profile["id"]
+    assert body["latest_recommendation_status"] == "need_help_attempt"
