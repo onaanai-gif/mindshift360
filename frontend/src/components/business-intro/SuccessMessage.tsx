@@ -1,4 +1,14 @@
-export function SuccessMessage() {
+"use client";
+
+import { useRouter } from "next/navigation";
+
+interface SuccessMessageProps {
+  profileId: number;
+}
+
+export function SuccessMessage({ profileId }: SuccessMessageProps) {
+  const router = useRouter();
+
   return (
     <div className="flex w-full flex-col items-center gap-8 text-center">
       <div className="flex flex-col gap-4">
@@ -13,6 +23,7 @@ export function SuccessMessage() {
       </div>
       <button
         type="button"
+        onClick={() => router.push(`/business/summary/${profileId}`)}
         className="w-full rounded-lg bg-blue-600 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
       >
         Continue

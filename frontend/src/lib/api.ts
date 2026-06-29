@@ -1,4 +1,9 @@
-import type { BusinessProfileFieldErrors, BusinessProfileInput } from "@/types/businessProfile";
+import type {
+  BusinessProfile,
+  BusinessProfileFieldErrors,
+  BusinessProfileInput,
+  PrimaryGoal,
+} from "@/types/businessProfile";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 
@@ -39,7 +44,25 @@ function parseFieldErrors(detail: ApiErrorDetail[]): BusinessProfileFieldErrors 
   return fieldErrors;
 }
 
-export async function submitBusinessProfile(input: BusinessProfileInput): Promise<void> {
+interface BusinessProfileApiResponse {
+  id: number;
+  business_name: string;
+  business_type: string;
+  town_city: string;
+  primary_goal: PrimaryGoal;
+}
+
+function toBusinessProfile(response: BusinessProfileApiResponse): BusinessProfile {
+  return {
+    id: response.id,
+    businessName: response.business_name,
+    businessType: response.business_type,
+    townCity: response.town_city,
+    primaryGoal: response.primary_goal,
+  };
+}
+
+export async function submitBusinessProfile(input: BusinessProfileInput): Promise<BusinessProfile> {
   const response = await fetch(`${API_BASE_URL}/api/business/profile`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -59,4 +82,16 @@ export async function submitBusinessProfile(input: BusinessProfileInput): Promis
   if (!response.ok) {
     throw new Error("Something went wrong while saving your business profile.");
   }
+
+  return toBusinessProfile(await response.json());
+}
+
+export async function getBusinessProfile(id: string | number): Promise<BusinessProfile> {
+  const response = await fetch(`${API_BASE_URL}/api/business/profile/${id}`);
+
+  if (!response.ok) {
+    throw new Error("We couldn't find that business profile.");
+  }
+
+  return toBusinessProfile(await response.json());
 }

@@ -31,7 +31,7 @@ export function BusinessIntroWizard() {
   const [fieldErrors, setFieldErrors] = useState<BusinessProfileFieldErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
+  const [savedProfileId, setSavedProfileId] = useState<number | null>(null);
 
   function goToNextStep() {
     setFieldErrors({});
@@ -73,8 +73,8 @@ export function BusinessIntroWizard() {
     setIsSubmitting(true);
 
     try {
-      await submitBusinessProfile(completeProfile);
-      setIsComplete(true);
+      const savedProfile = await submitBusinessProfile(completeProfile);
+      setSavedProfileId(savedProfile.id);
     } catch (error) {
       if (error instanceof BusinessProfileValidationError) {
         setFieldErrors(error.fieldErrors);
@@ -86,8 +86,8 @@ export function BusinessIntroWizard() {
     }
   }
 
-  if (isComplete) {
-    return <SuccessMessage />;
+  if (savedProfileId !== null) {
+    return <SuccessMessage profileId={savedProfileId} />;
   }
 
   return (

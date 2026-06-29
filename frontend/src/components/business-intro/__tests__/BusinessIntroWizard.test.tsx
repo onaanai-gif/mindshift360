@@ -13,12 +13,18 @@ jest.mock("@/lib/api", () => {
   };
 });
 
+const mockedPush = jest.fn();
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({ push: mockedPush }),
+}));
+
 const mockedSubmitBusinessProfile = submitBusinessProfile as jest.MockedFunction<
   typeof submitBusinessProfile
 >;
 
 beforeEach(() => {
   mockedSubmitBusinessProfile.mockReset();
+  mockedPush.mockReset();
 });
 
 async function completeFirstThreeSteps() {
@@ -62,7 +68,13 @@ describe("BusinessIntroWizard", () => {
   });
 
   it("submits the completed profile after selecting a goal and shows the success message", async () => {
-    mockedSubmitBusinessProfile.mockResolvedValueOnce(undefined);
+    mockedSubmitBusinessProfile.mockResolvedValueOnce({
+      id: 42,
+      businessName: "Acme Bakery",
+      businessType: "Bakery",
+      townCity: "Lagos",
+      primaryGoal: "Get More Customers",
+    });
     const user = await completeFirstThreeSteps();
 
     await user.click(screen.getByRole("button", { name: "Get More Customers" }));
@@ -79,6 +91,28 @@ describe("BusinessIntroWizard", () => {
       townCity: "Lagos",
       primaryGoal: "Get More Customers",
     });
+  });
+
+  it("navigates to the business summary page for the saved profile after pressing Continue", async () => {
+    mockedSubmitBusinessProfile.mockResolvedValueOnce({
+      id: 42,
+      businessName: "Acme Bakery",
+      businessType: "Bakery",
+      townCity: "Lagos",
+      primaryGoal: "Get More Customers",
+    });
+    const user = await completeFirstThreeSteps();
+
+    await user.click(screen.getByRole("button", { name: "Get More Customers" }));
+    await waitFor(() =>
+      expect(
+        screen.getByText("Welcome to MINDSHIFT360 Business Growth Partner."),
+      ).toBeInTheDocument(),
+    );
+
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+
+    expect(mockedPush).toHaveBeenCalledWith("/business/summary/42");
   });
 
   it("shows a server error message when submission fails", async () => {

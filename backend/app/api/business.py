@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
@@ -22,4 +22,13 @@ def create_business_profile(
     db.add(profile)
     db.commit()
     db.refresh(profile)
+    return profile
+
+
+@router.get("/profile/{profile_id}", response_model=BusinessProfileRead)
+def get_business_profile(profile_id: int, db: Session = Depends(get_db)) -> BusinessProfile:
+    """Retrieve a previously saved business profile."""
+    profile = db.get(BusinessProfile, profile_id)
+    if profile is None:
+        raise HTTPException(status_code=404, detail="Business profile not found")
     return profile

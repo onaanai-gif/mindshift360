@@ -20,3 +20,11 @@ export interface BusinessProfileFieldErrors {
   townCity?: string;
   primaryGoal?: string;
 }
+
+export interface BusinessProfile {
+  id: number;
+  businessName: string;
+  businessType: string;
+  townCity: string;
+  primaryGoal: PrimaryGoal;
+}

@@ -60,3 +60,19 @@ def test_create_business_profile_invalid_goal_returns_422(client: TestClient) ->
     response = client.post("/api/business/profile", json=payload)
 
     assert response.status_code == 422
+
+
+def test_get_business_profile_returns_saved_profile(client: TestClient) -> None:
+    created = client.post("/api/business/profile", json=VALID_PAYLOAD).json()
+
+    response = client.get(f"/api/business/profile/{created['id']}")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body == created
+
+
+def test_get_business_profile_returns_404_when_missing(client: TestClient) -> None:
+    response = client.get("/api/business/profile/999999")
+
+    assert response.status_code == 404
