@@ -26,9 +26,7 @@ export function WelcomeBack({ profile }: WelcomeBackProps) {
     : "Start My Growth Journey";
 
   const handleContinue = () => {
-    router.push(
-      `/journey?profileId=${profile.id}&goal=${encodeURIComponent(profile.primaryGoal)}`,
-    );
+    router.push("/dashboard");
   };
 
   return (

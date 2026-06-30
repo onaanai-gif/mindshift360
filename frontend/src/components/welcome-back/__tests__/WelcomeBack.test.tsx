@@ -67,7 +67,7 @@ describe("WelcomeBack", () => {
     expect(screen.getByRole("button", { name: "Continue My Journey" })).toBeInTheDocument();
   });
 
-  it("navigates to the journey page when Continue My Journey is clicked", async () => {
+  it("navigates to the dashboard when Continue My Journey is clicked", async () => {
     const user = userEvent.setup();
 
     render(
@@ -78,21 +78,17 @@ describe("WelcomeBack", () => {
 
     await user.click(screen.getByRole("button", { name: "Continue My Journey" }));
 
-    expect(mockedPush).toHaveBeenCalledWith(
-      "/journey?profileId=7&goal=Increase%20Sales",
-    );
+    expect(mockedPush).toHaveBeenCalledWith("/dashboard");
   });
 
-  it("navigates to the journey page when Start My Growth Journey is clicked", async () => {
+  it("navigates to the dashboard when Start My Growth Journey is clicked", async () => {
     const user = userEvent.setup();
 
     render(<WelcomeBack profile={BASE_PROFILE} />);
 
     await user.click(screen.getByRole("button", { name: "Start My Growth Journey" }));
 
-    expect(mockedPush).toHaveBeenCalledWith(
-      "/journey?profileId=7&goal=Increase%20Sales",
-    );
+    expect(mockedPush).toHaveBeenCalledWith("/dashboard");
   });
 
   it("shows the Your Progress card with counts", () => {
