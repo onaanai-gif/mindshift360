@@ -14,6 +14,12 @@ const STATUS_MESSAGE: Record<string, string> = {
   need_help_attempt: "You asked for help last time. Let's continue together.",
 };
 
+const STATUS_LABEL: Record<string, string> = {
+  completed: "Completed",
+  later: "Later",
+  need_help_attempt: "Need Help",
+};
+
 export function WelcomeBack({ profile }: WelcomeBackProps) {
   const router = useRouter();
 
@@ -53,7 +59,12 @@ export function WelcomeBack({ profile }: WelcomeBackProps) {
         </div>
         <div>
           <dt className="inline font-semibold">Current Progress Status: </dt>
-          <dd className="inline">{profile.latestRecommendationStatus ?? "Not started"}</dd>
+          <dd className="inline">
+            {profile.latestRecommendationStatus
+              ? (STATUS_LABEL[profile.latestRecommendationStatus] ??
+                profile.latestRecommendationStatus)
+              : "Not started"}
+          </dd>
         </div>
       </dl>
 

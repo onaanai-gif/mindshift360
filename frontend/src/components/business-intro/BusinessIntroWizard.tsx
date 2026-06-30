@@ -127,6 +127,7 @@ export function BusinessIntroWizard() {
       {step === 4 && (
         <GoalStep
           errorMessage={fieldErrors.primaryGoal ?? submitError ?? undefined}
+          disabled={isSubmitting}
           onSelect={handlePrimaryGoalSelect}
         />
       )}

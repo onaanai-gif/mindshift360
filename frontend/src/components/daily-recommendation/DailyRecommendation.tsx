@@ -36,6 +36,7 @@ export function DailyRecommendation({ businessProfileId, primaryGoal }: DailyRec
   const [view, setView] = useState<View>("recommendation");
   const [confirmationStatus, setConfirmationStatus] = useState<ConfirmationStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const recommendation = RECOMMENDATIONS[primaryGoal];
   const help = RECOMMENDATION_HELP[primaryGoal];
@@ -52,9 +53,15 @@ export function DailyRecommendation({ businessProfileId, primaryGoal }: DailyRec
   };
 
   const handleSelect = async (selectedStatus: ConfirmationStatus) => {
-    if (await saveStatus(selectedStatus)) {
-      setConfirmationStatus(selectedStatus);
-      setView("confirmation");
+    if (isSaving) return;
+    setIsSaving(true);
+    try {
+      if (await saveStatus(selectedStatus)) {
+        setConfirmationStatus(selectedStatus);
+        setView("confirmation");
+      }
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -99,20 +106,26 @@ export function DailyRecommendation({ businessProfileId, primaryGoal }: DailyRec
           {help.footer && <p className="text-lg text-gray-700">{help.footer}</p>}
         </div>
 
-        {error && <p className="text-lg text-red-600">{error}</p>}
+        {error && (
+          <p className="text-lg text-red-600" role="alert">
+            {error}
+          </p>
+        )}
 
         <div className="flex flex-col gap-4">
           <button
             type="button"
+            disabled={isSaving}
             onClick={() => handleSelect("need_help_attempt")}
-            className="w-full rounded-lg bg-blue-600 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
+            className="w-full rounded-lg bg-blue-600 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
             I&apos;ll Try This
           </button>
           <button
             type="button"
+            disabled={isSaving}
             onClick={() => setView("recommendation")}
-            className="w-full rounded-lg bg-gray-200 px-6 py-4 text-lg font-semibold text-gray-900 transition-colors hover:bg-gray-300 active:bg-gray-400"
+            className="w-full rounded-lg bg-gray-200 px-6 py-4 text-lg font-semibold text-gray-900 transition-colors hover:bg-gray-300 active:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Back
           </button>
@@ -140,27 +153,34 @@ export function DailyRecommendation({ businessProfileId, primaryGoal }: DailyRec
         Estimated Time: {recommendation.estimatedTime}
       </p>
 
-      {error && <p className="text-lg text-red-600">{error}</p>}
+      {error && (
+        <p className="text-lg text-red-600" role="alert">
+          {error}
+        </p>
+      )}
 
       <div className="flex flex-col gap-4">
         <button
           type="button"
+          disabled={isSaving}
           onClick={() => handleSelect("completed")}
-          className="w-full rounded-lg bg-blue-600 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
+          className="w-full rounded-lg bg-blue-600 px-6 py-4 text-lg font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
         >
           I&apos;ve Completed This
         </button>
         <button
           type="button"
+          disabled={isSaving}
           onClick={() => setView("help")}
-          className="w-full rounded-lg bg-gray-200 px-6 py-4 text-lg font-semibold text-gray-900 transition-colors hover:bg-gray-300 active:bg-gray-400"
+          className="w-full rounded-lg bg-gray-200 px-6 py-4 text-lg font-semibold text-gray-900 transition-colors hover:bg-gray-300 active:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-60"
         >
           I Need Help
         </button>
         <button
           type="button"
+          disabled={isSaving}
           onClick={() => handleSelect("later")}
-          className="w-full rounded-lg bg-gray-200 px-6 py-4 text-lg font-semibold text-gray-900 transition-colors hover:bg-gray-300 active:bg-gray-400"
+          className="w-full rounded-lg bg-gray-200 px-6 py-4 text-lg font-semibold text-gray-900 transition-colors hover:bg-gray-300 active:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-60"
         >
           I&apos;ll Do This Later
         </button>

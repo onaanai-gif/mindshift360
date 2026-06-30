@@ -1,15 +1,18 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import JourneyPage from "../page";
 
 const mockedSearchParamsGet = jest.fn();
+const mockedPush = jest.fn();
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: jest.fn() }),
+  useRouter: () => ({ push: mockedPush }),
   useSearchParams: () => ({ get: mockedSearchParamsGet }),
 }));
 
 beforeEach(() => {
   mockedSearchParamsGet.mockReset();
+  mockedPush.mockReset();
 });
 
 function setSearchParams(profileId: string | null, goal: string | null) {
@@ -35,5 +38,15 @@ describe("JourneyPage", () => {
     render(<JourneyPage />);
 
     expect(screen.getByText("We couldn't find your business profile.")).toBeInTheDocument();
+  });
+
+  it("navigates home when Return Home is pressed after an error", async () => {
+    setSearchParams(null, null);
+    const user = userEvent.setup();
+
+    render(<JourneyPage />);
+    await user.click(screen.getByRole("button", { name: "Return Home" }));
+
+    expect(mockedPush).toHaveBeenCalledWith("/");
   });
 });

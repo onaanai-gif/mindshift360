@@ -146,4 +146,26 @@ describe("DailyRecommendation", () => {
       ).toBeInTheDocument(),
     );
   });
+
+  it("disables the action buttons while a selection is being saved", async () => {
+    let resolveSubmit: () => void = () => {};
+    mockedSubmitRecommendationProgress.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveSubmit = () => resolve(undefined);
+      }),
+    );
+    const user = userEvent.setup();
+
+    render(<DailyRecommendation businessProfileId={7} primaryGoal="Get More Customers" />);
+    const completeButton = screen.getByRole("button", { name: "I've Completed This" });
+    await user.click(completeButton);
+
+    expect(completeButton).toBeDisabled();
+    expect(screen.getByRole("button", { name: "I Need Help" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "I'll Do This Later" })).toBeDisabled();
+
+    resolveSubmit();
+    await waitFor(() => expect(screen.getByText("Excellent.")).toBeInTheDocument());
+    expect(mockedSubmitRecommendationProgress).toHaveBeenCalledTimes(1);
+  });
 });

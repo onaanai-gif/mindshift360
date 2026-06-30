@@ -41,14 +41,14 @@ export function RecommendationHistory({ items }: RecommendationHistoryProps) {
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          {items.map((item, index) => {
+          {items.map((item) => {
             const badge = STATUS_BADGE[item.status] ?? {
               label: item.status,
               className: "bg-gray-100 text-gray-700",
             };
             return (
               <div
-                key={index}
+                key={`${item.createdAt}-${item.title}-${item.status}`}
                 className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
               >
                 <p className="text-base font-semibold text-gray-900">{item.title}</p>

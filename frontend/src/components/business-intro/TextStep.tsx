@@ -31,6 +31,8 @@ export function TextStep({
           type="text"
           value={value}
           placeholder={placeholder}
+          maxLength={200}
+          aria-label={question}
           onChange={(event) => setValue(event.target.value)}
           className="w-full rounded-lg border border-gray-300 px-4 py-4 text-lg focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
           aria-invalid={Boolean(errorMessage)}

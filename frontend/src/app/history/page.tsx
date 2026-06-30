@@ -1,12 +1,13 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 import { RecommendationHistory } from "@/components/recommendation-history/RecommendationHistory";
 import { getRecommendationHistory, type RecommendationHistoryItem } from "@/lib/api";
 
 function HistoryContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const profileId = Number(searchParams.get("profileId"));
   const [items, setItems] = useState<RecommendationHistoryItem[]>([]);
@@ -26,10 +27,25 @@ function HistoryContent() {
       .finally(() => setLoading(false));
   }, [profileId]);
 
-  if (loading) return null;
+  if (loading) {
+    return <p className="text-center text-lg text-gray-500">Loading...</p>;
+  }
 
   if (error) {
-    return <p className="text-center text-lg text-red-600">{error}</p>;
+    return (
+      <div className="flex w-full flex-col gap-6 text-center">
+        <p className="text-lg text-red-600" role="alert">
+          {error}
+        </p>
+        <button
+          type="button"
+          onClick={() => router.push("/")}
+          className="w-full rounded-lg bg-gray-200 px-6 py-4 text-lg font-semibold text-gray-900 transition-colors hover:bg-gray-300 active:bg-gray-400"
+        >
+          Return Home
+        </button>
+      </div>
+    );
   }
 
   return <RecommendationHistory items={items} />;

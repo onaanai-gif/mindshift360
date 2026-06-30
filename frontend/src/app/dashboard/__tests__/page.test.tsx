@@ -1,11 +1,13 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { getLatestBusinessProfile, type LatestBusinessProfile } from "@/lib/api";
 
 import DashboardPage from "../page";
 
+const mockedPush = jest.fn();
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: jest.fn() }),
+  useRouter: () => ({ push: mockedPush }),
 }));
 
 jest.mock("@/lib/api", () => ({
@@ -31,6 +33,7 @@ const BASE_PROFILE: LatestBusinessProfile = {
 
 beforeEach(() => {
   mockedGetLatestBusinessProfile.mockReset();
+  mockedPush.mockReset();
 });
 
 describe("DashboardPage", () => {
@@ -54,5 +57,21 @@ describe("DashboardPage", () => {
         screen.getByText("We couldn't find your business profile."),
       ).toBeInTheDocument();
     });
+  });
+
+  it("navigates home when Return Home is pressed after an error", async () => {
+    mockedGetLatestBusinessProfile.mockResolvedValueOnce(null);
+    const user = userEvent.setup();
+
+    render(<DashboardPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("We couldn't find your business profile."),
+      ).toBeInTheDocument();
+    });
+    await user.click(screen.getByRole("button", { name: "Return Home" }));
+
+    expect(mockedPush).toHaveBeenCalledWith("/");
   });
 });

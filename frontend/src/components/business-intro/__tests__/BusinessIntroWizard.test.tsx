@@ -138,4 +138,41 @@ describe("BusinessIntroWizard", () => {
 
     await waitFor(() => expect(screen.getByText("primary_goal is required")).toBeInTheDocument());
   });
+
+  it("disables the goal buttons while the profile is being submitted", async () => {
+    let resolveSubmit: (value: {
+      id: number;
+      businessName: string;
+      businessType: string;
+      townCity: string;
+      primaryGoal: "Get More Customers";
+    }) => void = () => {};
+    mockedSubmitBusinessProfile.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveSubmit = resolve;
+      }),
+    );
+    const user = await completeFirstThreeSteps();
+
+    const goalButton = screen.getByRole("button", { name: "Get More Customers" });
+    await user.click(goalButton);
+
+    expect(goalButton).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Increase Sales" })).toBeDisabled();
+
+    resolveSubmit({
+      id: 42,
+      businessName: "Acme Bakery",
+      businessType: "Bakery",
+      townCity: "Lagos",
+      primaryGoal: "Get More Customers",
+    });
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("Welcome to MINDSHIFT360 Business Growth Partner."),
+      ).toBeInTheDocument(),
+    );
+    expect(mockedSubmitBusinessProfile).toHaveBeenCalledTimes(1);
+  });
 });

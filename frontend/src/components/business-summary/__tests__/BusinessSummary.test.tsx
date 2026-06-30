@@ -81,6 +81,20 @@ describe("BusinessSummary", () => {
     );
   });
 
+  it("navigates home when Return Home is pressed after an error", async () => {
+    mockedGetBusinessProfile.mockRejectedValueOnce(new Error("not found"));
+    const user = userEvent.setup();
+
+    render(<BusinessSummary profileId="999" />);
+
+    await waitFor(() =>
+      expect(screen.getByText("We couldn't find that business profile.")).toBeInTheDocument(),
+    );
+    await user.click(screen.getByRole("button", { name: "Return Home" }));
+
+    expect(mockedPush).toHaveBeenCalledWith("/");
+  });
+
   it("navigates to /journey with the profile id and goal when Start My Growth Journey is pressed", async () => {
     mockedGetBusinessProfile.mockResolvedValueOnce(profileWithGoal("Increase Sales"));
     const user = userEvent.setup();
