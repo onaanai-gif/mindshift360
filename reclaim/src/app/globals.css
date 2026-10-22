@@ -1,0 +1,504 @@
+/* Reclaim: calm, low-data styles. System fonts only, no images. */
+
+:root {
+  --bg: #faf7f2;
+  --surface: #ffffff;
+  --ink: #1b2727;
+  --muted: #455353;
+  --teal-900: #0b3b3b;
+  --teal-700: #0e5552;
+  --teal-100: #e3efed;
+  --amber-700: #8a4b00;
+  --amber-500: #b46a0a;
+  --amber-100: #fbf0de;
+  --border: #c9d3d1;
+  --focus: #b46a0a;
+  --radius: 12px;
+  --space: 1rem;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--teal-900);
+  line-height: 1.25;
+  margin: 0 0 0.5rem;
+}
+
+h1 {
+  font-size: 1.75rem;
+}
+
+h2 {
+  font-size: 1.3rem;
+}
+
+h3 {
+  font-size: 1.15rem;
+}
+
+p,
+ul,
+ol,
+dl {
+  margin: 0 0 0.75rem;
+}
+
+ul,
+ol {
+  padding-left: 1.4rem;
+}
+
+li + li {
+  margin-top: 0.4rem;
+}
+
+a {
+  color: var(--teal-700);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+[tabindex="-1"]:focus-visible {
+  outline: 3px solid var(--focus);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  background: var(--surface);
+  padding: 0.5rem 1rem;
+  z-index: 10;
+}
+
+.skip-link:focus {
+  top: 0.5rem;
+}
+
+/* Layout ------------------------------------------------------------------ */
+
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner,
+.main,
+.footer-inner {
+  max-width: 38rem;
+  margin: 0 auto;
+  padding-left: var(--space);
+  padding-right: var(--space);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.5rem;
+}
+
+.wordmark {
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  color: var(--teal-900);
+  text-decoration: none;
+  padding: 0.5rem 0;
+}
+
+.wordmark::after {
+  content: "";
+  display: inline-block;
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-left: 0.2rem;
+  border-radius: 50%;
+  background: var(--amber-500);
+}
+
+.help-link {
+  font-weight: 600;
+  padding: 0.6rem 0.25rem;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.main {
+  padding-top: 1.75rem;
+  padding-bottom: 2.5rem;
+  min-height: 60vh;
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding: 1.25rem 0 2rem;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+.footer-links a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.stack > * + * {
+  margin-top: 1.25rem;
+}
+
+.stack-tight > * + * {
+  margin-top: 0.75rem;
+}
+
+/* Text -------------------------------------------------------------------- */
+
+.lead {
+  font-size: 1.2rem;
+}
+
+.small,
+.hint {
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.eyebrow {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--amber-700);
+  margin-bottom: 0.25rem;
+}
+
+.pause-text {
+  font-size: 1.6rem;
+}
+
+.source-label {
+  font-size: 0.95rem;
+  color: var(--muted);
+  border-left: 3px solid var(--border);
+  padding-left: 0.6rem;
+}
+
+.note {
+  background: var(--amber-100);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+}
+
+.quote {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-style: italic;
+}
+
+/* Buttons ----------------------------------------------------------------- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 52px;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius);
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.button-primary {
+  background: var(--teal-700);
+  color: #ffffff;
+}
+
+.button-primary:hover {
+  background: var(--teal-900);
+}
+
+.button-secondary {
+  background: var(--surface);
+  color: var(--teal-900);
+  border-color: var(--teal-700);
+}
+
+.button-secondary:hover {
+  background: var(--teal-100);
+}
+
+.button-choice {
+  background: var(--surface);
+  color: var(--teal-900);
+  border-color: var(--border);
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.button-choice:hover {
+  border-color: var(--teal-700);
+}
+
+.button-text {
+  background: transparent;
+  color: var(--teal-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  font-weight: 500;
+}
+
+.button-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.button-stack .button {
+  width: 100%;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+}
+
+@media (min-width: 30rem) {
+  .button-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Panels and cards -------------------------------------------------------- */
+
+.panel {
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.panel-quiet {
+  background: var(--teal-100);
+  border-color: transparent;
+}
+
+.panel-safety {
+  border: 2px solid var(--amber-500);
+  background: var(--surface);
+}
+
+.cards,
+.resource-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cards li + li,
+.resource-list li + li {
+  margin-top: 0;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+}
+
+.card-current {
+  border: 2px solid var(--teal-700);
+}
+
+.card-done {
+  opacity: 0.85;
+}
+
+.card-title {
+  font-size: 1.2rem;
+}
+
+.card > :last-child,
+.panel > :last-child {
+  margin-bottom: 0;
+}
+
+.details dt {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+.details dd {
+  margin: 0;
+}
+
+.contact-list {
+  padding-left: 1.1rem;
+}
+
+/* Forms ------------------------------------------------------------------- */
+
+.field {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  color: var(--teal-900);
+  margin-bottom: 0.25rem;
+  padding: 0;
+}
+
+textarea {
+  width: 100%;
+  font: inherit;
+  padding: 0.75rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  resize: vertical;
+}
+
+textarea:focus-visible {
+  border-color: var(--teal-700);
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-height: 48px;
+  padding: 0.6rem 0.25rem;
+  cursor: pointer;
+}
+
+.option input {
+  width: 1.4rem;
+  height: 1.4rem;
+  margin: 0.15rem 0 0;
+  flex-shrink: 0;
+  accent-color: var(--teal-700);
+}
+
+.notice {
+  background: var(--amber-100);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+.notice > :last-child {
+  margin-bottom: 0;
+}
+
+/* Timer ------------------------------------------------------------------- */
+
+.timer {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 1rem;
+}
+
+.timer-label {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.timer-time {
+  font-size: 2rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--teal-900);
+  margin: 0.25rem 0 0.5rem;
+}
+
+.steps li::marker {
+  color: var(--amber-700);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .button {
+    border: 2px solid ButtonText;
+  }
+}

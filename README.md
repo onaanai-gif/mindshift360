@@ -9,6 +9,7 @@ MINDSHIFT360 Business Growth Partner platform.
 backend/    FastAPI service (Python, SQLAlchemy, PostgreSQL)
 frontend/   Next.js application (React, TypeScript, Tailwind CSS)
 docs/       Project documentation
+reclaim/    RECLAIM: standalone gambling-harm support site (Next.js). See reclaim/README.md
 docker-compose.yml   Local multi-service orchestration
 ```
 
