@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BRAND } from "@/content/brand";
 import { isAiEnabled } from "@/lib/ai/provider";
 
 export const metadata: Metadata = { title: "Privacy and service information: Reclaim" };
@@ -8,6 +9,8 @@ export default function PrivacyPage() {
   const ai = isAiEnabled();
   return (
     <div className="stack prose">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="brand-logo" src={BRAND.logoSrc} alt={`Reclaim logo: ${BRAND.tagline}`} width={160} height={160} />
       <h1>Privacy and service information</h1>
 
       <section aria-labelledby="what-heading">

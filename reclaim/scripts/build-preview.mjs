@@ -14,6 +14,8 @@ const aliases = {
   "react/jsx-runtime": resolve(root, "scripts/preview/shims.ts"),
 };
 
+const dataUri = (file, type) => `data:${type};base64,${readFileSync(resolve(root, file)).toString("base64")}`;
+
 const reactGlobals = {
   name: "react-globals",
   setup(b) {
@@ -23,9 +25,19 @@ const reactGlobals = {
     }));
     b.onResolve({ filter: /^(next\/link|next\/navigation|react\/jsx-runtime)$/ }, (args) => ({ path: aliases[args.path] }));
     b.onResolve({ filter: /^server-only$/ }, () => ({ path: "server-only", namespace: "empty" }));
-    b.onResolve({ filter: /^@\/lib\/ai\/provider$/ }, () => ({ path: "provider", namespace: "stub" }));
+    b.onResolve({ filter: /(^@|\/src)\/lib\/ai\/provider$/ }, () => ({ path: "provider", namespace: "stub" }));
+    b.onResolve({ filter: /(^@|\/src)\/content\/brand$/ }, () => ({ path: "brand", namespace: "stub" }));
     b.onLoad({ filter: /.*/, namespace: "empty" }, () => ({ contents: "" }));
-    b.onLoad({ filter: /.*/, namespace: "stub" }, () => ({ contents: "export const isAiEnabled = () => false;" }));
+    b.onLoad({ filter: /.*/, namespace: "stub" }, (args) => ({
+      contents:
+        args.path === "provider"
+          ? "export const isAiEnabled = () => false;"
+          : `export const BRAND = ${JSON.stringify({
+              markSrc: dataUri("public/reclaim-mark.png", "image/png"),
+              logoSrc: dataUri("public/reclaim-logo.jpg", "image/jpeg"),
+              tagline: "A Recovery & Empowerment Initiative",
+            })};`,
+    }));
   },
 };
 
@@ -45,6 +57,9 @@ const result = await build({
   plugins: [reactGlobals],
 });
 
+if (/api\.anthropic\.com|ANTHROPIC_API_KEY|You help write one short/.test(result.outputFiles[0].text)) {
+  throw new Error("Server-only AI code leaked into the preview bundle");
+}
 const js = result.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
 const css = readFileSync(resolve(root, "src/app/globals.css"), "utf8");
 const previewCss = `

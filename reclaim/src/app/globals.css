@@ -1,64 +1,68 @@
 /* Reclaim: calm, low-data styles. System fonts only, no images. */
 
+/* Brand colours taken from the Reclaim logo: deep navy and a dark-to-light green. */
 :root {
-  --bg: #faf7f2;
+  --bg: #f6f8f4;
   --surface: #ffffff;
-  --ink: #1b2727;
-  --muted: #455353;
-  --teal-900: #0b3b3b;
-  --teal-700: #0e5552;
-  --teal-100: #e3efed;
-  --primary: #0e5552;
-  --primary-hover: #0b3b3b;
+  --ink: #0d1c2b;
+  --muted: #45525e;
+  --heading: #02182d;
+  --link: #2b6a24;
+  --tint: #eaf2e3;
+  --accent-text: #3d6f1e;
+  --accent: #689425;
+  --notice-bg: #eef5e6;
+  --primary: #265f2a;
+  --primary-hover: #02182d;
   --on-primary: #ffffff;
-  --amber-700: #8a4b00;
-  --amber-500: #b46a0a;
-  --amber-100: #fbf0de;
-  --border: #c9d3d1;
-  --focus: #b46a0a;
+  --border: #c6d0c8;
+  --focus: #4f8a1f;
+  --logo-bg: transparent;
   --radius: 12px;
   --space: 1rem;
   color-scheme: light;
 }
 
-/* Dark theme: same roles, calmer surfaces. Applies when the phone is set to dark. */
+/* Dark theme: same roles. Applies when the phone is set to dark. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #101a1a;
-    --surface: #172423;
-    --ink: #e4ecea;
-    --muted: #a7b7b4;
-    --teal-900: #d3ebe7;
-    --teal-700: #8fd3c8;
-    --teal-100: #1c3230;
-    --primary: #8fd3c8;
-    --primary-hover: #b5e4dc;
-    --on-primary: #0b2423;
-    --amber-700: #f0b867;
-    --amber-500: #d99a3f;
-    --amber-100: #33280f;
-    --border: #35504c;
-    --focus: #f0b867;
+    --bg: #06121e;
+    --surface: #0d1e2e;
+    --ink: #e5ecf2;
+    --muted: #a6b4c1;
+    --heading: #eef3f8;
+    --link: #a5d36b;
+    --tint: #12283a;
+    --accent-text: #a5d36b;
+    --accent: #8cc04a;
+    --notice-bg: #15301d;
+    --primary: #8cc04a;
+    --primary-hover: #b3dc7b;
+    --on-primary: #02182d;
+    --border: #2a3f52;
+    --focus: #a5d36b;
+    --logo-bg: #f6f8f4;
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #101a1a;
-  --surface: #172423;
-  --ink: #e4ecea;
-  --muted: #a7b7b4;
-  --teal-900: #d3ebe7;
-  --teal-700: #8fd3c8;
-  --teal-100: #1c3230;
-  --primary: #8fd3c8;
-  --primary-hover: #b5e4dc;
-  --on-primary: #0b2423;
-  --amber-700: #f0b867;
-  --amber-500: #d99a3f;
-  --amber-100: #33280f;
-  --border: #35504c;
-  --focus: #f0b867;
+  --bg: #06121e;
+  --surface: #0d1e2e;
+  --ink: #e5ecf2;
+  --muted: #a6b4c1;
+  --heading: #eef3f8;
+  --link: #a5d36b;
+  --tint: #12283a;
+  --accent-text: #a5d36b;
+  --accent: #8cc04a;
+  --notice-bg: #15301d;
+  --primary: #8cc04a;
+  --primary-hover: #b3dc7b;
+  --on-primary: #02182d;
+  --border: #2a3f52;
+  --focus: #a5d36b;
+  --logo-bg: #f6f8f4;
   color-scheme: dark;
 }
 
@@ -85,9 +89,10 @@ body {
 h1,
 h2,
 h3 {
-  color: var(--teal-900);
+  color: var(--heading);
   line-height: 1.25;
   margin: 0 0 0.5rem;
+  text-wrap: balance;
 }
 
 h1 {
@@ -119,7 +124,7 @@ li + li {
 }
 
 a {
-  color: var(--teal-700);
+  color: var(--link);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
@@ -185,22 +190,34 @@ a {
 }
 
 .wordmark {
-  font-weight: 600;
-  font-size: 1.15rem;
-  letter-spacing: 0.02em;
-  color: var(--teal-900);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 48px;
   text-decoration: none;
-  padding: 0.5rem 0;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  color: var(--heading);
 }
 
-.wordmark::after {
-  content: "";
-  display: inline-block;
-  width: 0.4rem;
-  height: 0.4rem;
-  margin-left: 0.2rem;
-  border-radius: 50%;
-  background: var(--amber-500);
+.wordmark img {
+  width: 38px;
+  height: 44px;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--logo-bg);
+}
+
+.wordmark-re {
+  color: var(--accent-text);
+}
+
+.brand-logo {
+  display: block;
+  width: 160px;
+  height: 160px;
+  border-radius: var(--radius);
 }
 
 .help-link {
@@ -258,7 +275,7 @@ a {
 .eyebrow {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--amber-700);
+  color: var(--accent-text);
   margin-bottom: 0.25rem;
 }
 
@@ -274,7 +291,7 @@ a {
 }
 
 .note {
-  background: var(--amber-100);
+  background: var(--notice-bg);
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
 }
@@ -316,29 +333,29 @@ a {
 
 .button-secondary {
   background: var(--surface);
-  color: var(--teal-900);
-  border-color: var(--teal-700);
+  color: var(--heading);
+  border-color: var(--link);
 }
 
 .button-secondary:hover {
-  background: var(--teal-100);
+  background: var(--tint);
 }
 
 .button-choice {
   background: var(--surface);
-  color: var(--teal-900);
+  color: var(--heading);
   border-color: var(--border);
   justify-content: flex-start;
   text-align: left;
 }
 
 .button-choice:hover {
-  border-color: var(--teal-700);
+  border-color: var(--link);
 }
 
 .button-text {
   background: transparent;
-  color: var(--teal-700);
+  color: var(--link);
   text-decoration: underline;
   text-underline-offset: 3px;
   padding-left: 0.25rem;
@@ -384,12 +401,12 @@ a {
 }
 
 .panel-quiet {
-  background: var(--teal-100);
+  background: var(--tint);
   border-color: transparent;
 }
 
 .panel-safety {
-  border: 2px solid var(--amber-500);
+  border: 2px solid var(--heading);
   background: var(--surface);
 }
 
@@ -415,7 +432,7 @@ a {
 }
 
 .card-current {
-  border: 2px solid var(--teal-700);
+  border: 2px solid var(--link);
 }
 
 .card-done {
@@ -457,7 +474,7 @@ a {
 .label {
   display: block;
   font-weight: 600;
-  color: var(--teal-900);
+  color: var(--heading);
   margin-bottom: 0.25rem;
   padding: 0;
 }
@@ -474,7 +491,7 @@ textarea {
 }
 
 textarea:focus-visible {
-  border-color: var(--teal-700);
+  border-color: var(--link);
 }
 
 .option {
@@ -491,11 +508,11 @@ textarea:focus-visible {
   height: 1.4rem;
   margin: 0.15rem 0 0;
   flex-shrink: 0;
-  accent-color: var(--teal-700);
+  accent-color: var(--link);
 }
 
 .notice {
-  background: var(--amber-100);
+  background: var(--notice-bg);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   font-size: 1rem;
@@ -522,12 +539,12 @@ textarea:focus-visible {
 .timer-time {
   font-size: 2rem;
   font-variant-numeric: tabular-nums;
-  color: var(--teal-900);
+  color: var(--heading);
   margin: 0.25rem 0 0.5rem;
 }
 
 .steps li::marker {
-  color: var(--amber-700);
+  color: var(--accent-text);
   font-weight: 600;
 }
 

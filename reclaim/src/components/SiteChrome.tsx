@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { BRAND } from "@/content/brand";
 import { useSession } from "./SessionProvider";
 
 export function Header() {
@@ -16,9 +17,14 @@ export function Header() {
         <Link
           href="/"
           className="wordmark"
+          aria-label="Reclaim home"
           onClick={() => dispatch({ type: "go", view: "landing" })}
         >
-          Reclaim
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={BRAND.markSrc} alt="" width={34} height={40} />
+          <span aria-hidden="true">
+            <span className="wordmark-re">RE</span>CLAIM
+          </span>
         </Link>
         <Link href="/help" className="help-link">
           Get human help
