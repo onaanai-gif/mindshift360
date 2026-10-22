@@ -117,6 +117,13 @@ the instructions, missing credentials, network failure, timeouts, refusals and
 invalid AI output, plus checks that user text never reaches console output or
 API responses.
 
+## Private preview file
+
+`npm run build:preview` writes `reclaim-preview.html`: a single-file,
+AI-off preview built from the same components, useful for sharing privately
+for review. It loads React from cdnjs and uses an in-page router in place of
+Next.js routing. It is not the production build.
+
 ## Editing content
 
 - Wording: `src/content/supportContent.ts`. Keep it short, British English, no

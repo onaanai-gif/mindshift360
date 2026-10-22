@@ -8,6 +8,9 @@
   --teal-900: #0b3b3b;
   --teal-700: #0e5552;
   --teal-100: #e3efed;
+  --primary: #0e5552;
+  --primary-hover: #0b3b3b;
+  --on-primary: #ffffff;
   --amber-700: #8a4b00;
   --amber-500: #b46a0a;
   --amber-100: #fbf0de;
@@ -16,6 +19,47 @@
   --radius: 12px;
   --space: 1rem;
   color-scheme: light;
+}
+
+/* Dark theme: same roles, calmer surfaces. Applies when the phone is set to dark. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101a1a;
+    --surface: #172423;
+    --ink: #e4ecea;
+    --muted: #a7b7b4;
+    --teal-900: #d3ebe7;
+    --teal-700: #8fd3c8;
+    --teal-100: #1c3230;
+    --primary: #8fd3c8;
+    --primary-hover: #b5e4dc;
+    --on-primary: #0b2423;
+    --amber-700: #f0b867;
+    --amber-500: #d99a3f;
+    --amber-100: #33280f;
+    --border: #35504c;
+    --focus: #f0b867;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #101a1a;
+  --surface: #172423;
+  --ink: #e4ecea;
+  --muted: #a7b7b4;
+  --teal-900: #d3ebe7;
+  --teal-700: #8fd3c8;
+  --teal-100: #1c3230;
+  --primary: #8fd3c8;
+  --primary-hover: #b5e4dc;
+  --on-primary: #0b2423;
+  --amber-700: #f0b867;
+  --amber-500: #d99a3f;
+  --amber-100: #33280f;
+  --border: #35504c;
+  --focus: #f0b867;
+  color-scheme: dark;
 }
 
 *,
@@ -262,12 +306,12 @@ a {
 }
 
 .button-primary {
-  background: var(--teal-700);
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .button-primary:hover {
-  background: var(--teal-900);
+  background: var(--primary-hover);
 }
 
 .button-secondary {

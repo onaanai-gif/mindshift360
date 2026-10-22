@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useSession } from "./SessionProvider";
 
 export function Header() {
   const { dispatch } = useSession();
-  const pathname = usePathname();
   return (
     <header className="site-header">
       <a href="#main" className="skip-link">
@@ -17,9 +16,7 @@ export function Header() {
         <Link
           href="/"
           className="wordmark"
-          onClick={() => {
-            if (pathname === "/") dispatch({ type: "go", view: "landing" });
-          }}
+          onClick={() => dispatch({ type: "go", view: "landing" })}
         >
           Reclaim
         </Link>
